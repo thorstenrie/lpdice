@@ -4,25 +4,19 @@ import (
 	"math/rand"
 )
 
-var (
-	rnd *rand.Rand
-	cs  csource
-	ms  msource
-)
+func CryptoRand() (*rand.Rand, error) {
+	return New(cryptoSource())
+}
 
-func init() {
-	if cs.available() {
-		rnd = rand.New(cs)
-	} else {
-		rnd = rand.New(ms)
+func NewDeterministicRand() (*rand.Rand, error) {
+	return New(newDeterministicSource())
+}
+
+// Seed and Read not secure for sources from NewSource()!
+func New(src Source) (*rand.Rand, error) {
+	if src.assert(); src.err() != nil {
+		// TODO: add context to error
+		return nil, src.err()
 	}
-}
-
-func Seed(s int64) {
-	ms.Seed(s)
-	rnd = rand.New(ms)
-}
-
-func d(sides int) int {
-	return rnd.Intn(sides) + 1
+	return rand.New(src), nil
 }

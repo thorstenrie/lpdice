@@ -1,27 +1,46 @@
 package lpdice
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/binary"
+	"sync"
 )
 
-type csource struct{}
-
-func (c csource) Seed(s int64) {}
-
-func (c csource) Int63() int64 {
-	var v uint64
-	e := binary.Read(rand.Reader, binary.BigEndian, &v)
-	if e != nil {
-		return 0
-	}
-	return int64(v & ^uint64(1<<63))
+type cSource struct {
+	mu sync.Mutex
+	e  error
 }
 
-func (c csource) available() bool {
+var (
+	cryptoSrc cSource
+)
+
+func cryptoSource() *cSource {
+	return &cryptoSrc
+}
+
+func (c *cSource) Seed(s int64) {}
+
+func (c *cSource) Int63() int64 {
+	var v uint64
+	c.mu.Lock()
+	c.e = binary.Read(crand.Reader, binary.BigEndian, &v)
+	c.mu.Unlock()
+	mask := ^uint64(1 << 63)
+	return int64(v & mask)
+}
+
+func (c *cSource) assert() {
 	b := make([]byte, 1)
-	if _, e := rand.Read(b); e != nil {
-		return false
-	}
-	return true
+	c.mu.Lock()
+	_, c.e = crand.Read(b)
+	c.mu.Unlock()
+}
+
+func (c *cSource) err() error {
+	c.mu.Lock()
+	e := c.e
+	c.mu.Unlock()
+	return e
+
 }

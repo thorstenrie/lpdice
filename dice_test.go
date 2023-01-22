@@ -6,12 +6,25 @@ import (
 )
 
 func TestD6(t *testing.T) {
-	r := D6()
-	fmt.Println(r)
+	fmt.Println(D6())
+	fmt.Println(D6())
+	fmt.Println(D6())
+	fmt.Println(D6())
+	fmt.Println(D6())
 }
 
 func TestD6s(t *testing.T) {
+	fmt.Println(D6())
+	Seed(1)
+	fmt.Println(D6())
+	fmt.Println(D6())
+	Seed(1)
+	fmt.Println(D6())
+	fmt.Println(D6())
+	Seed(1)
+	fmt.Println(D6())
+	fmt.Println(D6())
 	Seed(2)
-	r := D6()
-	fmt.Println(r)
+	fmt.Println(D6())
+	fmt.Println(D6())
 }
