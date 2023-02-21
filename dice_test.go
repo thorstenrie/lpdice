@@ -9,41 +9,63 @@ import (
 var (
 	tc = []struct {
 		n int
-		f func() (int, error)
+		f func() (*Die, error)
 	}{
-		{4, D4},
-		{6, D6},
-		{8, D8},
-		{10, D10},
-		{12, D12},
-		{20, D20},
+		{4, NewD4},
+		{6, NewD6},
+		{8, NewD8},
+		{10, NewD10},
+		{12, NewD12},
+		{20, NewD20},
 	}
 )
 
 func TestSeed(t *testing.T) {
 	var (
 		a, b int
-		e    error
-		s    int64               = 1
-		itr  int                 = 100
-		f    func() (int, error) = func() (int, error) { Seed(s); return D6() }
+		s    int64 = 1
+		itr  int   = 100
+		f          = func(d *Die) (int, error) { d.Seed(s); return d.Roll() }
 	)
-	if a, e = f(); e != nil {
+	d, e := NewD6()
+	if e != nil {
+		t.Fatal(tserr.NotAvailable(&tserr.NotAvailableArgs{S: "D6", Err: e}))
+	}
+	if a, e = f(d); e != nil {
 		t.Error(tserr.Op(&tserr.OpArgs{Op: "f()", Fn: "a", Err: e}))
 	}
 	for i := 0; i < itr; i++ {
-		if b, e = f(); e != nil {
+		if b, e = f(d); e != nil {
 			t.Error(tserr.Op(&tserr.OpArgs{Op: "f()", Fn: "b", Err: e}))
 		}
 		if a != b {
 			t.Error(tserr.Equal(&tserr.EqualArgs{Var: "D6", Actual: int64(b), Want: int64(a)}))
 		}
 	}
-	NoSeed()
+	d.NoSeed()
+	testD(t, 6, d)
 }
 
-func TestDices(t *testing.T) {
+func TestDice(t *testing.T) {
 	for _, c := range tc {
-		testD(t, c)
+		d, e := c.f()
+		if e != nil {
+			t.Error(tserr.NotAvailable(&tserr.NotAvailableArgs{S: "Die", Err: e}))
+		} else {
+			testD(t, c.n, d)
+		}
 	}
+}
+
+func TestNil(t *testing.T) {
+	var d *Die = nil
+	if _, err := d.init(); err == nil {
+		t.Error(tserr.NilFailed("init"))
+	}
+	testE(t, d)
+}
+
+func TestNotSet(t *testing.T) {
+	var d Die
+	testE(t, &d)
 }
