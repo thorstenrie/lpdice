@@ -7,6 +7,10 @@ import (
 	"github.com/thorstenrie/tsrand"
 )
 
+const (
+	defaultN int = 6
+)
+
 type Die struct {
 	prnd  *rand.Rand
 	drnd  *rand.Rand
@@ -35,10 +39,10 @@ func (d *Die) notSet() error {
 	if d == nil {
 		return tserr.NilPtr()
 	}
-	if d.sides <= 0 {
-		return tserr.NotSet("Sides of die")
-	} else if (d.prnd == nil) || (d.drnd == nil) || (d.grnd == nil) {
-		return tserr.NilPtr()
+	if d.sides == 0 {
+		d.sides = defaultN
+		_, e := d.init()
+		return e
 	}
 	return nil
 }
@@ -50,6 +54,9 @@ func (d *Die) Roll() (int, error) {
 	if e := d.notSet(); e != nil {
 		return 0, e
 	}
+	if d.grnd == nil {
+		return 0, tserr.NilPtr()
+	}
 	return d.grnd.Intn(d.sides) + 1, nil
 }
 
@@ -59,6 +66,9 @@ func (d *Die) Seed(s int64) error {
 	}
 	if e := d.notSet(); e != nil {
 		return e
+	}
+	if d.drnd == nil {
+		return tserr.NilPtr()
 	}
 	d.drnd.Seed(s)
 	d.grnd = d.drnd
@@ -71,6 +81,9 @@ func (d *Die) NoSeed() error {
 	}
 	if e := d.notSet(); e != nil {
 		return e
+	}
+	if d.prnd == nil {
+		return tserr.NilPtr()
 	}
 	d.grnd = d.prnd
 	return nil

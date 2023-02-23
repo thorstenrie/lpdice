@@ -46,6 +46,9 @@ func testD(t *testing.T, n int, d *Die) {
 }
 
 func testE(t *testing.T, d *Die) {
+	if _, err := d.init(); err == nil {
+		t.Error(tserr.NilFailed("init"))
+	}
 	if err := d.notSet(); err == nil {
 		t.Error(tserr.NilFailed("lateInit"))
 	}

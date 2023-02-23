@@ -59,13 +59,16 @@ func TestDice(t *testing.T) {
 
 func TestNil(t *testing.T) {
 	var d *Die = nil
-	if _, err := d.init(); err == nil {
-		t.Error(tserr.NilFailed("init"))
-	}
 	testE(t, d)
 }
 
 func TestNotSet(t *testing.T) {
-	var d Die
-	testE(t, &d)
+	var d1, d2, d3, d4 Die
+	testD(t, defaultN, &d1)
+	d2.NoSeed()
+	testD(t, defaultN, &d2)
+	d3.Seed(1)
+	testD(t, defaultN, &d3)
+	d4.Roll()
+	testD(t, defaultN, &d3)
 }
