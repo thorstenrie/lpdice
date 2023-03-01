@@ -64,7 +64,38 @@ The quality of random results from rolling the die depends on the random number 
 ## Example
 
 ```
-TODO
+package main
+
+import (
+	"fmt"
+
+	"github.com/thorstenrie/lpdice"
+)
+
+func main() {
+	fmt.Println("For each turn, Player 1 and Player 2 will roll a die and compare the results. The higher result wins and the player gains a point. After three turns, the player with the higher number of points wins the game.")
+	var p1, p2 int          // Points
+	d1, _ := lpdice.NewD6() // Die of Player 1
+	d2, _ := lpdice.NewD6() // Die of Player 2
+	for i := 0; i < 3; i++ {
+		r1, _ := d1.Roll()
+		r2, _ := d2.Roll()
+		if r1 > r2 {
+			p1++
+		} else if r2 > r1 {
+			p2++
+		}
+		fmt.Printf("ROUND%d\nPlayer 1 rolled a %d\nPlayer 2 rolled a %d\nPlayer 1 %d points\nPlayer 2 %d points\n", i+1, r1, r2, p1, p2)
+	}
+	fmt.Printf("RESULT: ")
+	if p1 > p2 {
+		fmt.Println("Player 1 wins.")
+	} else if p2 > p1 {
+		fmt.Println("Player 2 wins.")
+	} else {
+		fmt.Println("Draw.")
+	}
+}
 ```
 
 ## Links
