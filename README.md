@@ -97,6 +97,7 @@ func main() {
 	}
 }
 ```
+[Go Playground](https://go.dev/play/p/oF2B8KVEyqS)
 
 ## Links
 
