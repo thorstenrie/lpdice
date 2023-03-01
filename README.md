@@ -85,7 +85,7 @@ func main() {
 		} else if r2 > r1 {
 			p2++
 		}
-		fmt.Printf("ROUND%d\nPlayer 1 rolled a %d\nPlayer 2 rolled a %d\nPlayer 1 %d points\nPlayer 2 %d points\n", i+1, r1, r2, p1, p2)
+		fmt.Printf("ROUND%d\nPlayer 1 rolls a %d\nPlayer 2 rolls a %d\nPlayer 1 %d points\nPlayer 2 %d points\n", i+1, r1, r2, p1, p2)
 	}
 	fmt.Printf("RESULT: ")
 	if p1 > p2 {
