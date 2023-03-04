@@ -3,12 +3,12 @@
 // that can be found in the LICENSE file.
 package lpdice
 
-// Import package testing as well as tserr
+// Import package testing as well as tserr and lpstats
 import (
 	"testing" // testing
 
-	"github.com/thorstenrie/lpstats"
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorstenrie/lpstats" // lpstats
+	"github.com/thorstenrie/tserr"   // tserr
 )
 
 // tc contains dice to be tested. It is a slice of structs.
