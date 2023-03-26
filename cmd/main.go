@@ -1,35 +1,27 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"log"
-	"os"
+	"context"
 
 	"github.com/thorstenrie/lpdice"
 )
 
-func main() {
+var (
+	d *lpdice.Die
+)
 
-	var d *lpdice.Die
+func main() {
 
 	d, _ = lpdice.NewD6()
 
-	s := bufio.NewScanner(os.Stdin)
-	for s.Scan() {
-		switch s.Text() {
-		case "roll":
-			r, _ := d.Roll()
-			fmt.Println(r)
-		case "stop":
-			os.Exit(0)
-		default:
-			fmt.Println("unknown")
-		}
-	}
+	register("roll", roll)
+	register("sides", sides)
+	register("seed", seed)
+	register("stop", stop)
+	setExit("stop")
 
-	if err := s.Err(); err != nil {
-		log.Println(err)
-	}
-
+	ctx := context.Background()
+	//ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	run(ctx)
+	//cancel()
 }
