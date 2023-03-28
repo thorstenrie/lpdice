@@ -12,17 +12,17 @@ import (
 
 var history []int
 
-func roll(ctx context.Context, args []string) /*(bool,*/ error /*)*/ {
+func roll(ctx context.Context, args []string) error {
 	if len(args) != 0 {
-		return /*true,*/ errors.New("Unexpected argument")
+		return errors.New("Unexpected argument")
 	}
 	r, e := d.Roll()
 	if e != nil {
-		return /*true,*/ e
+		return e
 	}
 	history = append(history, r)
 	fmt.Printf("%d\n", r)
-	return /*true,*/ nil
+	return nil
 }
 
 func stop(ctx context.Context, args []string) error {
@@ -34,13 +34,13 @@ func stop(ctx context.Context, args []string) error {
 	return nil
 }
 
-func sides(ctx context.Context, args []string) /*(bool,*/ error /*)*/ {
+func sides(ctx context.Context, args []string) error {
 	if len(args) != 1 {
-		return /*true,*/ errors.New("Expected one argument")
+		return errors.New("Expected one argument")
 	}
 	i, e := strconv.ParseInt(args[0], 10, 0)
 	if e != nil {
-		return /*true,*/ errors.New("Argument must be an integer")
+		return errors.New("Argument must be an integer")
 	}
 	switch i {
 	case 4:
@@ -56,24 +56,25 @@ func sides(ctx context.Context, args []string) /*(bool,*/ error /*)*/ {
 	case 20:
 		d, _ = lpdice.NewD20()
 	default:
-		return /*true,*/ errors.New("Die has 4, 6, 8, 10, 12 or 20 sides")
+		return errors.New("Die has 4, 6, 8, 10, 12 or 20 sides")
 	}
-	fmt.Printf("new die with %d sides\n", i)
-	return /*true,*/ nil
+	history = nil
+	fmt.Printf("new die with %d sides and no seed\n", i)
+	return nil
 }
 
-func seed(ctx context.Context, args []string) /*(bool,*/ error /*)*/ {
+func seed(ctx context.Context, args []string) error {
 	if len(args) != 1 {
-		return /*true,*/ errors.New("Expected one argument")
+		return errors.New("Expected one argument")
 	}
 	i, e := strconv.ParseInt(args[0], 10, 0)
 	if e != nil {
-		return /*true,*/ errors.New("Argument must be an integer")
+		return errors.New("Argument must be an integer")
 	}
 	e = d.Seed(i)
 	if e != nil {
-		return /*true,*/ e
+		return e
 	}
 	fmt.Printf("die seeded with %d\n", i)
-	return /*true,*/ nil
+	return nil
 }
