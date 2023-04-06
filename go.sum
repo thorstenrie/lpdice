@@ -1,5 +1,5 @@
-github.com/thorstenrie/lpstats v1.2.0 h1:RRt4j4BYVFgqy5nNJgEeVuyPKvyngBpUjWx5fFavQfs=
-github.com/thorstenrie/lpstats v1.2.0/go.mod h1:wuc8IgXBq/M8CUS8I1cC0ZI9FlYz6BUU9tuC1JRtk40=
+github.com/thorstenrie/lpstats v1.3.0 h1:IvE18r31oehiRptQEhr597lBLNP0/F4qUevF8h0vB0s=
+github.com/thorstenrie/lpstats v1.3.0/go.mod h1:wuc8IgXBq/M8CUS8I1cC0ZI9FlYz6BUU9tuC1JRtk40=
 github.com/thorstenrie/tserr v1.7.0 h1:O/dS7cygh2Z4vIwdpHezDnb1jB1yjCtmD8/JyEcPkrk=
 github.com/thorstenrie/tserr v1.7.0/go.mod h1:8kiMcslns2DRdKLkLkp8MTb910lmtd9uPsElyILdkjA=
 github.com/thorstenrie/tsrand v1.0.2 h1:h5xgcpJiRiEj1PZajhIltcY9gZ/3Nx0Dc41BG61+u3c=

@@ -6,22 +6,20 @@ import (
 	"github.com/thorstenrie/lpdice"
 )
 
-var (
-	d *lpdice.Die
-)
-
 func main() {
 
 	d, _ = lpdice.NewD6()
 
-	register("roll", roll)
-	register("sides", sides)
-	register("seed", seed)
-	register("stop", stop)
-	setExit("stop")
+	HelpText("Throw a die")
+	HelpCommand("help")
+	Add(&Command{Key: "roll", Function: roll, Help: "Roll the die"})
+	Add(&Command{Key: "sides", Function: sides, Help: "New die with {4, 6, 8, 10, 12, 20} sides and no seed"})
+	Add(&Command{Key: "seed", Function: seed, Help: "Set seed"})
+	Add(&Command{Key: "stop", Function: stop, Help: "Exit application"})
+	SetExit("stop")
 
 	ctx := context.Background()
 	//ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-	run(ctx)
+	Run(ctx)
 	//cancel()
 }

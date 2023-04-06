@@ -12,6 +12,10 @@ import (
 
 var history []int
 
+var (
+	d *lpdice.Die
+)
+
 func roll(ctx context.Context, args []string) error {
 	if len(args) != 0 {
 		return errors.New("Unexpected argument")
