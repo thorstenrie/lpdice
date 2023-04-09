@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/thorstenrie/lpstats"
 )
 
 type CommandFunc func(context.Context, []string) error
@@ -20,13 +18,19 @@ type Command struct {
 }
 
 type runner struct {
-	help string
-	cmds map[string]*Command
-	exit *Command
+	app     string
+	help    string
+	version string
+	cmds    StrMap[*Command]
+	exit    *Command
 }
 
 var (
 	run = runner{cmds: make(map[string]*Command)}
+)
+
+const (
+	tab string = "  "
 )
 
 func HelpText(text string) error {
@@ -34,6 +38,22 @@ func HelpText(text string) error {
 		return errors.New("only printable characters allowed in help text")
 	}
 	run.help = text
+	return nil
+}
+
+func Version(text string) error {
+	if text != printable(text) {
+		return errors.New("only printable characters allowed in version")
+	}
+	run.version = text
+	return nil
+}
+
+func AppName(text string) error {
+	if text != printable(text) {
+		return errors.New("only printable characters allowed in app name")
+	}
+	run.app = text
 	return nil
 }
 
@@ -50,19 +70,14 @@ func printHelp(ctx context.Context, args []string) error {
 		fmt.Println(text)
 		return nil
 	}
-	text += fmt.Sprintf("  Usage:\n    [command] [arguments]")
-	text += "\n\n  Available commands:"
-	m := 0
-	for c := range run.cmds {
-		m = lpstats.Max(m, len(c))
+	text += tab + "Usage:\n" + tab + tab + "[command] [arguments]"
+	text += "\n\n" + tab + "Available commands:\n"
+	pm := make(PrintMap, len(run.cmds))
+	for k := range run.cmds {
+		pm[k] = run.cmds[k].Help
 	}
-	for c := range run.cmds {
-		text += "\n    " +
-			c +
-			strings.Repeat(" ", m+1-len(c)) +
-			run.cmds[c].Help
-	}
-	fmt.Println(text)
+	t, _ := pm.Print(tab + tab)
+	fmt.Println(text + t)
 	return nil
 }
 
@@ -84,7 +99,7 @@ func Add(cmd *Command) error {
 }
 
 func split(l string) (string, []string, error) {
-	a := strings.Split(printable(l), " ")
+	a := strings.Fields(printable(l))
 	if len(a) == 0 {
 		return "", nil, errors.New("empty line")
 	}
