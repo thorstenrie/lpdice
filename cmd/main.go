@@ -21,7 +21,7 @@ func main() {
 	SetExit("stop")
 
 	ctx := context.Background()
-	//ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	//ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	Run(ctx)
 	//cancel()
 }

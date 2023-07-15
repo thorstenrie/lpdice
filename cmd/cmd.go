@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/thorstenrie/tsfio"
+	"github.com/thorstenrie/tstable"
 )
 
 type CommandFunc func(context.Context, []string) error
@@ -21,7 +24,7 @@ type runner struct {
 	app     string
 	help    string
 	version string
-	cmds    StrMap[*Command]
+	cmds    map[string]*Command
 	exit    *Command
 }
 
@@ -34,7 +37,7 @@ const (
 )
 
 func HelpText(text string) error {
-	if text != printable(text) {
+	if text != tsfio.Printable(text) {
 		return errors.New("only printable characters allowed in help text")
 	}
 	run.help = text
@@ -42,7 +45,7 @@ func HelpText(text string) error {
 }
 
 func Version(text string) error {
-	if text != printable(text) {
+	if text != tsfio.Printable(text) {
 		return errors.New("only printable characters allowed in version")
 	}
 	run.version = text
@@ -50,7 +53,7 @@ func Version(text string) error {
 }
 
 func AppName(text string) error {
-	if text != printable(text) {
+	if text != tsfio.Printable(text) {
 		return errors.New("only printable characters allowed in app name")
 	}
 	run.app = text
@@ -62,7 +65,7 @@ func HelpCommand(c string) error {
 }
 
 func printHelp(ctx context.Context, args []string) error {
-	text := ""
+	/*text := ""
 	if run.help != "" {
 		text += fmt.Sprintf("%s\n\n", run.help)
 	}
@@ -78,6 +81,24 @@ func printHelp(ctx context.Context, args []string) error {
 	}
 	t, _ := pm.Print(tab + tab)
 	fmt.Println(text + t)
+	return nil*/
+	text := ""
+	if run.help != "" {
+		text += fmt.Sprintf("%s\n", run.help)
+	}
+	text += tab + "\nUsage:\n\n" + tab + "[command] [arguments]\n"
+	if len(run.cmds) == 0 {
+		fmt.Println(text)
+		return nil
+	}
+	text += "\nAvailable commands:\n"
+	t, _ := tstable.New([]string{"[command]", "[usage]"})
+	for c := range run.cmds {
+		t.AddRow([]string{c, run.cmds[c].Help})
+	}
+	t.SetGrid(&tstable.EmptyGrid)
+	ts, _ := t.Print()
+	fmt.Print(text + ts)
 	return nil
 }
 
@@ -88,7 +109,7 @@ func Add(cmd *Command) error {
 	if cmd.Key == "" {
 		return errors.New("command cannot be empty")
 	}
-	if cmd.Key != printable(cmd.Key) {
+	if cmd.Key != tsfio.Printable(cmd.Key) {
 		return errors.New("only printable characters allowed in key")
 	}
 	if _, e := find(cmd.Key); e == nil {
@@ -99,7 +120,7 @@ func Add(cmd *Command) error {
 }
 
 func split(l string) (string, []string, error) {
-	a := strings.Fields(printable(l))
+	a := strings.Fields(tsfio.Printable(l))
 	if len(a) == 0 {
 		return "", nil, errors.New("empty line")
 	}
